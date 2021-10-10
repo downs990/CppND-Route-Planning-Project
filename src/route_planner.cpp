@@ -39,24 +39,18 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     // Use the FindNeighbors() method of the current_node to populate current_node.neighbors vector with all the neighbors.
     current_node->FindNeighbors();
 
+
     // For each node in current_node.neighbors, set the parent, the h_value, the g_value. 
     for(RouteModel::Node *current_neighbor : current_node->neighbors){
         current_neighbor->parent = current_node;
         current_neighbor->h_value = CalculateHValue(current_neighbor);
-        // How to calculate g_value ???
-        current_neighbor->g_value = 0;   
-
-        // ??? For each node in current_node.neighbors, add the neighbor to 
+        current_neighbor->g_value = 0;   // ?? Track back all parents to get g_value?
+ 
+        // For each node in current_node.neighbors, add the neighbor to 
         // open_list and set the node's visited attribute to true.
-
-
-
+        open_list.push_back(current_neighbor);
+        current_neighbor->visited = true;
     }
- 
-
-
- 
-
 }
 
 
@@ -68,6 +62,8 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 // - Return the pointer.
 
 RouteModel::Node *RoutePlanner::NextNode() {
+
+    
 
 }
 
