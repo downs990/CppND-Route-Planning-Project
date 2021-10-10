@@ -34,20 +34,19 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 
 
 // TODO 4: Complete the AddNeighbors method to expand the current node by adding all unvisited neighbors to the open list.
+// - Use the FindNeighbors() method of the current_node to populate current_node.neighbors vector with all the neighbors.
+// - For each node in current_node.neighbors, set the parent, the h_value, the g_value. 
+// - For each node in current_node.neighbors, add the neighbor to 
+//          open_list and set the node's visited attribute to true.
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
-    // Use the FindNeighbors() method of the current_node to populate current_node.neighbors vector with all the neighbors.
     current_node->FindNeighbors();
 
-
-    // For each node in current_node.neighbors, set the parent, the h_value, the g_value. 
     for(RouteModel::Node *current_neighbor : current_node->neighbors){
         current_neighbor->parent = current_node;
         current_neighbor->h_value = CalculateHValue(current_neighbor);
         current_neighbor->g_value = 0;   // ?? Track back all parents to get g_value?
  
-        // For each node in current_node.neighbors, add the neighbor to 
-        // open_list and set the node's visited attribute to true.
         open_list.push_back(current_neighbor);
         current_neighbor->visited = true;
     }
@@ -63,8 +62,18 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
 RouteModel::Node *RoutePlanner::NextNode() {
 
-    
+    RouteModel::Node *lowest_sum_node = open_list[0];
+    int lowest_sum = open_list[0]->g_value + open_list[0]->h_value;
 
+    for(RouteModel::Node *current_open_node : open_list ){
+        int current_node_sum = current_open_node->g_value + current_open_node->h_value;
+        if(current_node_sum < lowest_sum){
+            lowest_sum_node = current_open_node;
+        }
+    }
+
+    open_list.pop_back();
+    return lowest_sum_node;
 }
 
 
