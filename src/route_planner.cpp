@@ -63,6 +63,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 RouteModel::Node *RoutePlanner::NextNode() {
 
     RouteModel::Node *lowest_sum_node = open_list[0];
+    // f = g + h
     int lowest_sum = open_list[0]->g_value + open_list[0]->h_value;
 
     for(RouteModel::Node *current_open_node : open_list ){
@@ -72,7 +73,8 @@ RouteModel::Node *RoutePlanner::NextNode() {
         }
     }
 
-    open_list.pop_back();
+    // How to do this in C++ ???
+    // open_list.pop(lowest_sum_node);
     return lowest_sum_node;
 }
 
