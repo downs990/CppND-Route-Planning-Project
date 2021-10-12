@@ -92,10 +92,10 @@ RouteModel::Node *RoutePlanner::NextNode() {
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
     // Create path_found vector
-    distance = 0.0f;
+    distance = 0.0f; 
     std::vector<RouteModel::Node> path_found;
 
-    while(current_node->parent != nullptr){
+    while(current_node->parent != start_node){
         current_node = current_node->parent; 
 
         // Manhattan distance ( NOT Euclidean )
@@ -121,13 +121,20 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 // - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
 
 void RoutePlanner::AStarSearch() {
-    RouteModel::Node *current_node = nullptr;
- 
+    RouteModel::Node *current_node = start_node;
+  
+    while(true){
+        AddNeighbors(current_node);
+        current_node = NextNode();
 
- 
-    AddNeighbors(current_node);
-    RouteModel::Node *next_node = NextNode();
-    m_Model.path = ConstructFinalPath(next_node);
+        if(current_node == end_node){
+            m_Model.path = ConstructFinalPath(current_node); 
+            break;
+        }
 
+    }
+
+     
+ 
 
 }
