@@ -45,7 +45,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     for(RouteModel::Node *current_neighbor : current_node->neighbors){
         current_neighbor->parent = current_node;
         current_neighbor->h_value = CalculateHValue(current_neighbor);
-        current_neighbor->g_value = 0;   // ?? Track back all parents to get g_value?
+        current_neighbor->g_value = current_node->g_value + 1; 
  
         open_list.push_back(current_neighbor);
         current_neighbor->visited = true;
@@ -65,16 +65,19 @@ RouteModel::Node *RoutePlanner::NextNode() {
     RouteModel::Node *lowest_sum_node = open_list[0];
     // f = g + h
     int lowest_sum = open_list[0]->g_value + open_list[0]->h_value;
+    int index_to_remove = 0;
 
-    for(RouteModel::Node *current_open_node : open_list ){
+    for(int i = 0; i < open_list.size(); i++){
+        RouteModel::Node *current_open_node = open_list[i];
         int current_node_sum = current_open_node->g_value + current_open_node->h_value;
         if(current_node_sum < lowest_sum){
             lowest_sum_node = current_open_node;
+            index_to_remove = i;
         }
-    }
-
-    // How to do this in C++ ???
-    // open_list.pop(lowest_sum_node);
+    } 
+ 
+    auto element_to_remove = open_list.begin() + index_to_remove;
+    open_list.erase(element_to_remove);
     return lowest_sum_node;
 }
 
@@ -94,7 +97,14 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 
     while(current_node->parent != nullptr){
         current_node = current_node->parent;
-        distance += 1; // Right ???? 
+        double x1 = current_node->parent->x;
+        double y1 = current_node->parent->y;
+        double x2 = current_node->x;
+        double y2 = current_node->y;
+
+        // Manhattan distance ( NOT Euclidean )
+        double distanceFromParent = abs(x2 - x1) + abs(y2 - y1);
+        distance += distanceFromParent;
         path_found.push_back(*current_node);
     }
 
