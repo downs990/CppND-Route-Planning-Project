@@ -60,7 +60,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 // - Remove that node from the open_list.
 // - Return the pointer.
 
-RouteModel::Node *RoutePlanner::NextNode() {
+RouteModel::Node *RoutePlanner::NextNode() { 
 
     RouteModel::Node *lowest_sum_node = open_list[0];
     // f = g + h
@@ -96,14 +96,10 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     std::vector<RouteModel::Node> path_found;
 
     while(current_node->parent != nullptr){
-        current_node = current_node->parent;
-        double x1 = current_node->parent->x;
-        double y1 = current_node->parent->y;
-        double x2 = current_node->x;
-        double y2 = current_node->y;
+        current_node = current_node->parent; 
 
         // Manhattan distance ( NOT Euclidean )
-        double distanceFromParent = abs(x2 - x1) + abs(y2 - y1);
+        double distanceFromParent = current_node->distance(*current_node->parent);
         distance += distanceFromParent;
         path_found.push_back(*current_node);
     }
