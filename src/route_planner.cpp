@@ -67,7 +67,7 @@ RouteModel::Node *RoutePlanner::NextNode() {
     int lowest_sum = open_list[0]->g_value + open_list[0]->h_value;
     int index_to_remove = 0;
 
-    for(int i = 0; i < open_list.size(); i++){
+    for(int i = 1; i < open_list.size(); i++){
         RouteModel::Node *current_open_node = open_list[i];
         int current_node_sum = current_open_node->g_value + current_open_node->h_value;
         if(current_node_sum < lowest_sum){
@@ -75,9 +75,8 @@ RouteModel::Node *RoutePlanner::NextNode() {
             index_to_remove = i;
         }
     } 
- 
-    auto element_to_remove = open_list.begin() + index_to_remove;
-    open_list.erase(element_to_remove);
+  
+    open_list.erase( open_list.begin() + index_to_remove );
     return lowest_sum_node;
 }
 
@@ -96,12 +95,13 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     std::vector<RouteModel::Node> path_found;
 
     while(current_node->parent != start_node){
-        current_node = current_node->parent; 
-
+        
         // Manhattan distance ( NOT Euclidean )
         double distanceFromParent = current_node->distance(*current_node->parent);
         distance += distanceFromParent;
         path_found.push_back(*current_node);
+
+        current_node = current_node->parent; 
     }
 
 
