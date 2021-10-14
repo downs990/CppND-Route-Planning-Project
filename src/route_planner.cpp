@@ -101,11 +101,11 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     reverse(path_found.begin(), path_found.end());
 
-    std::cout << "Path Front (x,y):" << path_found.front().x << " " << path_found.front().y << "\n";
-    std::cout << "Path Back (x,y):" << path_found.back().x << " " << path_found.back().y << "\n";
+    // std::cout << "Path Front (x,y):" << path_found.front().x << " " << path_found.front().y << "\n";
+    // std::cout << "Path Back (x,y):" << path_found.back().x << " " << path_found.back().y << "\n";
     
-    std::cout << "Start Node (x,y):" << start_node->x << " " << start_node->y << "\n";
-    std::cout << "End Node (x,y):" << end_node->x << " " << end_node->y << "\n";
+    // std::cout << "Start Node (x,y):" << start_node->x << " " << start_node->y << "\n";
+    // std::cout << "End Node (x,y):" << end_node->x << " " << end_node->y << "\n";
     
 	// finally working !!!!
     return path_found;
