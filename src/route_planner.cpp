@@ -42,7 +42,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
     current_node->FindNeighbors();
 
-    for(auto current_neighbor : current_node->neighbors){
+    for(RouteModel::Node *current_neighbor : current_node->neighbors){
         current_neighbor->parent = current_node;
         current_neighbor->h_value = CalculateHValue(current_neighbor);
         current_neighbor->g_value = current_node->g_value + current_node->distance(*current_neighbor); 
@@ -62,24 +62,15 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
 RouteModel::Node *RoutePlanner::NextNode() { 
 
-    RouteModel::Node *lowest_sum_node = open_list[0];
-    // f = g + h
-    int lowest_sum = open_list[0]->g_value + open_list[0]->h_value;
-    int index_to_remove = 0; 
+    std::sort(open_list.begin(), open_list.end(), 
+    [](const RouteModel::Node *my_left, const RouteModel::Node *my_right){
+        return my_left->g_value + my_left->h_value < my_right->g_value + my_right->h_value;
+    });
 
-    for(int i = 1; i < open_list.size(); i++){
-        RouteModel::Node *current_open_node = open_list[i];
-        int current_node_sum = current_open_node->g_value + current_open_node->h_value;
-        if(current_node_sum < lowest_sum){
-            lowest_sum_node = current_open_node;
-            index_to_remove = i;
-            lowest_sum = current_node_sum;
-        }
-    } 
-  
-    open_list.erase( open_list.begin() + index_to_remove );
-    return lowest_sum_node;
-    
+
+    RouteModel::Node* my_next_node = open_list[0];
+    open_list.erase(open_list.begin());
+    return my_next_node;
 }
 
 
@@ -116,7 +107,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     std::cout << "Start Node (x,y):" << start_node->x << " " << start_node->y << "\n";
     std::cout << "End Node (x,y):" << end_node->x << " " << end_node->y << "\n";
     
-	// latest version 
+	// finally working !!!!
     return path_found;
 
 }
@@ -131,10 +122,13 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 // - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
 
 void RoutePlanner::AStarSearch() { 
- 
+   
+   
     RouteModel::Node *current_node = start_node;
+    open_list.push_back(current_node);
+    current_node->visited = true;
  
-    while(true){
+    while(open_list.size() > 0){
         AddNeighbors(current_node);
         current_node = NextNode();
 
