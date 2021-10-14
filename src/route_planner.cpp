@@ -45,7 +45,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     for(auto current_neighbor : current_node->neighbors){
         current_neighbor->parent = current_node;
         current_neighbor->h_value = CalculateHValue(current_neighbor);
-        current_neighbor->g_value = current_node->g_value + 1;//current_node->distance(*current_neighbor); 
+        current_neighbor->g_value = current_node->g_value + current_node->distance(*current_neighbor); 
  
         open_list.push_back(current_neighbor);
         current_neighbor->visited = true;
@@ -105,7 +105,8 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
         current_node = current_node->parent; 
     }
  
-    
+    path_found.push_back(*current_node);
+
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     reverse(path_found.begin(), path_found.end());
 
